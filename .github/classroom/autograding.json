@@ -1,0 +1,24 @@
+{
+  "tests": [
+    {
+      "name": "single pivot quicksort",
+      "setup": "echo I2luY2x1ZGUgIm15X3Fzb3J0LmgiCiNpbmNsdWRlIDxzdGRpby5oPgoKaW50IG1haW4oKQp7CglpbnQgaSwgbjsKCXNjYW5mKCIlZCIsICZuKTsKCWludCAqYTsKCWEgPSAoaW50ICopIG1hbGxvYyhzaXplb2YoaW50KSAqIG4pOwoJZm9yIChpID0gMDsgaSA8IG47IGkrKykgCgkJc2NhbmYoIiVkIiwgJmFbaV0pOwoKCXNpbmdsZV9waXZvdF9xc29ydChhLCAwLCBuIC0gMSk7CgoJZm9yIChpID0gMDsgaSA8IG47IGkrKykKCQlwcmludGYoIiVkICIsIGFbaV0pOwoKCWZyZWUoYSk7CglyZXR1cm4gMDsKfQo= | base64 -d > main.c && gcc main.c qsort.c -lm && /usr/bin/timeout -k 4s -s 9 4s ./a.out < input.txt > actual_output.txt",
+      "run": "diff -q actual_output.txt output.txt",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 5
+    },
+    {
+      "name": "dual pivot quicksort",
+      "setup": "echo I2luY2x1ZGUgIm15X3Fzb3J0LmgiCiNpbmNsdWRlIDxzdGRpby5oPgoKaW50IG1haW4oKQp7CglpbnQgaSwgbjsKCXNjYW5mKCIlZCIsICZuKTsKCWludCAqYTsKCWEgPSAoaW50ICopIG1hbGxvYyhzaXplb2YoaW50KSAqIG4pOwoJZm9yIChpID0gMDsgaSA8IG47IGkrKykgCgkJc2NhbmYoIiVkIiwgJmFbaV0pOwoKCWR1YWxfcGl2b3RfcXNvcnQoYSwgMCwgbiAtIDEpOwoKCWZvciAoaSA9IDA7IGkgPCBuOyBpKyspCgkJcHJpbnRmKCIlZCAiLCBhW2ldKTsKCglmcmVlKGEpOwoJcmV0dXJuIDA7Cn0K | base64 -d > main.c && gcc main.c qsort.c -lm && /usr/bin/timeout -k 4s -s 9 4s ./a.out < input.txt > actual_output.txt",
+      "run": "diff -q actual_output.txt output.txt",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": 5
+    }
+  ]
+}

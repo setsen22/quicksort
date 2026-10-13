@@ -1,0 +1,159 @@
+name: Autograding
+
+on:
+  push:
+    paths-ignore:
+      - '.github/badges/points.svg'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  autograding:
+    name: Autograding
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run tests from autograding.json
+        shell: bash
+        run: |
+          python3 <<'PY'
+          import json
+          import subprocess
+
+          filename = ".github/classroom/autograding.json"
+
+          with open(filename, encoding="utf-8") as f:
+              config = json.load(f)
+
+          tests = config.get("tests", [])
+          score = 0
+          total = sum(int(t.get("points", 0)) for t in tests)
+
+          print("=" * 50)
+          print("AUTOGRADING")
+          print("=" * 50)
+
+          for test in tests:
+              name = test.get("name", "Unnamed test")
+              points = int(test.get("points", 0))
+              setup = test.get("setup", "")
+              command = test.get("run", "")
+              test_input = test.get("input", "")
+              expected = test.get("output", "")
+              timeout = int(test.get("timeout", 10))
+
+              print(f"\n--- {name} ({points} points) ---")
+
+              try:
+                  if setup:
+                      setup_result = subprocess.run(
+                          setup,
+                          shell=True,
+                          text=True,
+                          capture_output=True,
+                          timeout=max(timeout, 10)
+                      )
+
+                      if setup_result.returncode != 0:
+                          print("FAIL: setup/compile error")
+                          if setup_result.stderr:
+                              print(setup_result.stderr)
+                          continue
+
+                  result = subprocess.run(
+                      command,
+                      shell=True,
+                      input=test_input,
+                      text=True,
+                      capture_output=True,
+                      timeout=timeout
+                  )
+
+                  actual = result.stdout.replace("\r\n", "\n").strip()
+                  wanted = expected.replace("\r\n", "\n").strip()
+
+                  if result.returncode == 0 and actual == wanted:
+                      score += points
+                      print(f"PASS +{points}")
+                  else:
+                      print("FAIL")
+
+              except subprocess.TimeoutExpired:
+                  print(f"FAIL: timeout after {timeout} seconds")
+
+              except Exception as e:
+                  print("FAIL:", e)
+
+          print("\n" + "=" * 50)
+          print(f"SCORE: {score}/{total}")
+          print("=" * 50)
+
+          with open("autograding-score.txt", "w") as f:
+              f.write(f"{score}/{total}")
+
+          with open("autograding-result.txt", "w") as f:
+              f.write("pass" if score == total else "fail")
+          PY
+
+      - name: Create points badge
+        shell: bash
+        run: |
+          mkdir -p .github/badges
+
+          SCORE=$(cat autograding-score.txt)
+
+          python3 <<PY
+          score = "$SCORE"
+
+          svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="108" height="20">
+            <linearGradient id="b" x2="0" y2="100%">
+              <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+              <stop offset="1" stop-opacity=".1"/>
+            </linearGradient>
+            <mask id="a">
+              <rect width="108" height="20" rx="3" fill="#fff"/>
+            </mask>
+            <g mask="url(#a)">
+              <path fill="#555" d="M0 0h54v20H0z"/>
+              <path fill="#00a6b2" d="M54 0h54v20H54z"/>
+              <path fill="url(#b)" d="M0 0h108v20H0z"/>
+            </g>
+            <g fill="#fff"
+               text-anchor="middle"
+               font-family="Verdana,Geneva,DejaVu Sans,sans-serif"
+               font-size="11">
+              <text x="27" y="15" fill="#010101" fill-opacity=".3">Points</text>
+              <text x="27" y="14">Points</text>
+              <text x="81" y="15" fill="#010101" fill-opacity=".3">{score}</text>
+              <text x="81" y="14">{score}</text>
+            </g>
+          </svg>'''
+
+          with open(".github/badges/points.svg", "w") as f:
+              f.write(svg)
+          PY
+
+      - name: Commit points badge
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add .github/badges/points.svg
+
+          if ! git diff --cached --quiet; then
+            git commit -m "Update points badge"
+            git push
+          fi
+
+      - name: Final result
+        shell: bash
+        run: |
+          if [ "$(cat autograding-result.txt)" != "pass" ]; then
+            exit 1
+          fi
