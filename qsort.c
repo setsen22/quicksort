@@ -99,7 +99,7 @@ if (hi - lo <= CUTOFF) {
                 return;
         }
         if (a[lo] > a[hi])
-                swap(&a[lo], &a[hi]);
+                swap(&a[lo], &a[hi]);   
         int p = a[lo], q = a[hi];
         int l = lo + 1, g = hi - 1, k = l;
         while (k <= g) {
@@ -123,8 +123,8 @@ if (hi - lo <= CUTOFF) {
         }
         l--;
         g++;
-        swap(&a[lo], &a[l]);
-        swap(&a[hi], &a[g]);
+        swap(&a[lo], &a[l]);           
+        swap(&a[hi], &a[g]);          
         _dual_pivot_qsort(a, lo, l - 1);
         if (p < q)
                 _dual_pivot_qsort(a, l + 1, g - 1);
