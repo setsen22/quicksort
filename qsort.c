@@ -75,8 +75,8 @@ if (hi - lo <= CUTOFF) {
                 swap(&a[i], &a[j]);
         }
         swap(&a[lo], &a[j]);
-        _single_pivot_qsort(a, lo, j);         
-        _single_pivot_qsort(a, j + 1, hi);        /* Энд quicksort хэрэгжүүл */
+        _single_pivot_qsort(a, lo, j - 1);
+        _single_pivot_qsort(a, j + 1, hi);       /* Энд quicksort хэрэгжүүл */
 }
 
 /*
