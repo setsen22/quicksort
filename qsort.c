@@ -108,16 +108,18 @@ if (hi - lo <= CUTOFF) {
                         l++;
                         k++;
                 } else if (a[k] > q) {
-                        swap(&a[k], &a[g]);
+                        swap(&a[k], &a[g]);   
                         g--;
                 } else {
                         k++;
                 }
         }
-        swap(&a[lo], &a[l]);         
+        l--;
+        g++;
+        swap(&a[lo], &a[l]);
         swap(&a[hi], &a[g]);
         _dual_pivot_qsort(a, lo, l - 1);
-        _dual_pivot_qsort(a, l, g);
+        _dual_pivot_qsort(a, l + 1, g - 1);
         _dual_pivot_qsort(a, g + 1, hi);
                   Энд dual-pivot quicksort хэрэгжүүл
         */
