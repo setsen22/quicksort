@@ -15,7 +15,16 @@ static int init_seed = 0;  // Random seed 1 удаа эхлүүлнэ
 */
 static void insertion_sort(int a[], int lo, int hi)
 {
-        /* Оруулан эрэмбэлэх аргыг хэрэгжүүл */
+int i, j, key;
+        for (i = lo + 1; i <= hi; i++) {
+                key = a[i];
+                j = i - 1;
+                while (j >= lo && a[j] > key) {
+                        a[j + 1] = a[j];
+                        j--;
+                }
+                a[j + 1] = key;
+        }        /* Оруулан эрэмбэлэх аргыг хэрэгжүүл */
 }
 
 /*
