@@ -98,7 +98,9 @@ if (hi - lo <= CUTOFF) {
                 insertion_sort(a, lo, hi);
                 return;
         }
-        int p = a[lo], q = a[hi];     
+        if (a[lo] > a[hi])
+                swap(&a[lo], &a[hi]);
+        int p = a[lo], q = a[hi];
         int l = lo + 1, g = hi - 1, k = l;
         while (k <= g) {
                 if (a[k] < p) {
@@ -112,6 +114,8 @@ if (hi - lo <= CUTOFF) {
                         k++;
                 }
         }
+        swap(&a[lo], &a[l]);         
+        swap(&a[hi], &a[g]);
         _dual_pivot_qsort(a, lo, l - 1);
         _dual_pivot_qsort(a, l, g);
         _dual_pivot_qsort(a, g + 1, hi);
