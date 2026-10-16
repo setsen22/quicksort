@@ -94,8 +94,28 @@ void single_pivot_qsort(int a[], int lo, int hi)
 */
 static void _dual_pivot_qsort(int a[], int lo, int hi)
 {
-        /*
-          Энд dual-pivot quicksort хэрэгжүүл
+if (hi - lo <= CUTOFF) {
+                insertion_sort(a, lo, hi);
+                return;
+        }
+        int p = a[lo], q = a[hi];     
+        int l = lo + 1, g = hi - 1, k = l;
+        while (k <= g) {
+                if (a[k] < p) {
+                        swap(&a[k], &a[l]);
+                        l++;
+                        k++;
+                } else if (a[k] > q) {
+                        swap(&a[k], &a[g]);
+                        g--;
+                } else {
+                        k++;
+                }
+        }
+        _dual_pivot_qsort(a, lo, l - 1);
+        _dual_pivot_qsort(a, l, g);
+        _dual_pivot_qsort(a, g + 1, hi);
+                  Энд dual-pivot quicksort хэрэгжүүл
         */
 	
 }
