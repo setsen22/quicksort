@@ -128,7 +128,6 @@ if (hi - lo <= CUTOFF) {
         _dual_pivot_qsort(a, lo, l - 1);
         if (p < q)
                 _dual_pivot_qsort(a, l + 1, g - 1);
-        _dual_pivot_qsort(a, g + 1, hi);
                   Энд dual-pivot quicksort хэрэгжүүл
         */
 	
